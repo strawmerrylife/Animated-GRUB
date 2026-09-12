@@ -1,0 +1,17 @@
+GRUB Animation Project
+======================
+
+This project uses and modifies GRUB animation code derived from the
+a1ive GRUB animation work.
+
+The modified GRUB animation implementation retains its upstream
+copyright and licensing notices.
+
+Upstream project:
+https://github.com/a1ive/grub
+
+The GRUB-derived source code is licensed under the GNU General Public
+License, version 3 (GPLv3). See LICENSE for the full license text.
+
+Project additions include the animation theme, animation frame assets,
+validation script, build script, and project documentation.

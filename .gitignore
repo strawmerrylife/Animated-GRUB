@@ -1,0 +1,9 @@
+# Generated build output
+output/
+
+# Local build artifacts
+build/
+
+# Temporary files
+*.log
+*.tmp
