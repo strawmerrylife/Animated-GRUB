@@ -40,10 +40,62 @@ cat > "$GENERATED_THEME" <<EOF
 # GRUB Animation Project
 
 + animation {
-    dir_name = "animation"
-    image_format = "png"
-    frame_number = $FRAME_COUNT
-    bind_menu = "full_screen"
+  dir_name = "animation"
+  image_format = png
+  size_ratio = 1
+  frame_number = $FRAME_COUNT
+  move_speed = 0
+  play_once = pause
+  bind_menu = full_screen
+}
+
++ boot_menu {
+  left = 7%+3
+  top = 86%-161
+  width = 600
+  height = 143
+  item_height = 32
+  item_font = "Funnel Sans Regular 21"
+  item_color = "#ACA8A5"
+  item_padding = 0
+  icon_width = 19
+  item_icon_space = 18
+  icon_height = 0
+  selected_item_color = "#FFFFFF"
+  selected_item_font = "Funnel Sans Regular 21"
+  item_spacing = 4
+  selected_item_pixmap_style = "selected_item_*.png"
+}
+
++ label {
+  color = "#ACA8A5"
+  font = "Funnel Sans Regular 21"
+  left = 9%+3
+  top = 87%+1
+  width = 31%
+  align = "left"
+  text = "Press C for Console or E to Edit"
+}
+
++ label {
+  color = "#ACA8A5"
+  font = "Funnel Sans Regular 22"
+  left = 85%+1
+  top = 87%+5
+  width = 31%
+  align = "left"
+  text = "Booting"
+}
+
++ label {
+  color = "#5AEB71"
+  font = "Teko Regular 32"
+  left = 85%+112
+  top = 87%
+  width = 31%
+  align = "left"
+  id = "__timeout__"
+  text = "%d"
 }
 EOF
 
@@ -81,7 +133,7 @@ echo
     --modules="all_video gfxterm gfxmenu png font" \
     "boot/grub/grub.cfg=$GENERATED_CFG" \
     "boot/grub/themes/animation/theme.txt=$GENERATED_THEME" \
-    "boot/grub/themes/animation/animation=$ANIMATION_DIR"
+    "boot/grub/animation=$ANIMATION_DIR"
 
 echo
 echo "=== Build successful ==="
