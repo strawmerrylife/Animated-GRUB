@@ -1,0 +1,34 @@
+diff --git a/grub-core/gfxmenu/animation/engine_core.c b/grub-core/gfxmenu/animation/engine_core.c
+index 029c07586..be6631123 100644
+--- a/grub-core/gfxmenu/animation/engine_core.c
++++ b/grub-core/gfxmenu/animation/engine_core.c
+@@ -1160,7 +1160,8 @@ animation_refresh_info (void *vself, grub_gfxmenu_view_t view)
+   self->view = view;
+   int cur_selected = view->selected;
+ 
+-  if (self->bind_menu && (self->is_selected != cur_selected))
++  if (self->bind_menu && self->bind_menu != FULL_SCREEN_VARIETY
++      && (self->is_selected != cur_selected))
+     {
+       if (self->bind_menu != FOLLOW_SINGLE)
+ 	{
+diff --git a/grub-core/gfxmenu/gui_canvas.c b/grub-core/gfxmenu/gui_canvas.c
+index a05491242..be278441b 100644
+--- a/grub-core/gfxmenu/gui_canvas.c
++++ b/grub-core/gfxmenu/gui_canvas.c
+@@ -209,8 +209,13 @@ canvas_add (void *vself, grub_gui_component_t comp)
+   if (! node)
+     return;   /* Note: probably should handle the error.  */
+   node->component = comp;
+-  node->next = self->components.next;
+-  self->components.next = node;
++  node->next = NULL;
++
++  struct component_node *tail = &self->components;
++  while (tail->next)
++     tail = tail->next;
++
++  tail->next = node;
+   comp->ops->set_parent (comp, (grub_gui_container_t) self);
+ }
+ 
