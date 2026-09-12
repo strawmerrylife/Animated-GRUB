@@ -47,8 +47,30 @@ cat > "$GENERATED_THEME" <<EOF
 }
 EOF
 
+# Generate GRUB configuration.
+GENERATED_CFG="$OUTPUT_DIR/grub.cfg"
+
+cat > "$GENERATED_CFG" <<EOF
+set grub_frame_speed=100
+set gfxmode=auto
+set gfxpayload=keep
+
+insmod gfxterm
+insmod gfxmenu
+
+terminal_output gfxterm
+
+set theme=/boot/grub/themes/animation/theme.txt
+export theme
+
+normal
+EOF
+
 echo "Generated theme:"
 echo "  $GENERATED_THEME"
+echo
+echo "Generated config:"
+echo "  $GENERATED_CFG"
 echo
 
 # Build standalone GRUB EFI.
@@ -57,7 +79,7 @@ echo
     --directory="$BUILD_DIR/grub-core" \
     -o "$OUTPUT_DIR/grub-animation-x86_64.efi" \
     --modules="all_video gfxterm gfxmenu png font" \
-    "boot/grub/grub.cfg=$OUTPUT_DIR/grub.cfg" \
+    "boot/grub/grub.cfg=$GENERATED_CFG" \
     "boot/grub/themes/animation/theme.txt=$GENERATED_THEME" \
     "boot/grub/themes/animation/animation=$ANIMATION_DIR"
 
@@ -66,4 +88,3 @@ echo "=== Build successful ==="
 echo
 echo "Output:"
 echo "  $OUTPUT_DIR/grub-animation-x86_64.efi"
-
