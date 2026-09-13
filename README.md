@@ -15,7 +15,7 @@ The repository includes a 300-frame example animation in:
 theme/animation/
 ```
 
-A visual MP4 preview can be added here showing the animation together with the GRUB menu UI.
+-----------<"yet to paste an mp4">-----------
 
 ---
 
