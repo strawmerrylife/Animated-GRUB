@@ -15,7 +15,9 @@ The repository includes a 300-frame example animation in:
 theme/animation/
 ```
 
------------<"yet to paste an mp4">-----------
+[▶️ Watch the Animated GRUB preview](assets/animated_grub_preview.mp4)
+
+A visual preview of the animated GRUB background and menu UI.
 
 ---
 
