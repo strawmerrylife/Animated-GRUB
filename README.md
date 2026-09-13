@@ -15,7 +15,7 @@ The repository includes a 300-frame example animation in:
 theme/animation/
 ```
 
----------
+---
 
 A visual preview of the animated GRUB background and menu UI.
 
