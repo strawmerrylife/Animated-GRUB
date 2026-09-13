@@ -1,8 +1,0 @@
-# GRUB Animation Project - test theme
-
-+ animation {
-    dir_name = "animation"
-    image_format = "png"
-    frame_number = 300
-    bind_menu = "full_screen"
-}

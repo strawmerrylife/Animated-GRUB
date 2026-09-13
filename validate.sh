@@ -1,10 +1,11 @@
 #!/bin/bash
 
-set -e
+set -eo pipefail
+shopt -s nullglob
 
-ANIMATION_DIR="$(dirname "$0")/theme/animation"
+ANIMATION_DIR="$(cd "$(dirname "$0")" && pwd)/theme/animation"
 
-echo "=== GRUB Animation Validator ==="
+echo "=== Animated GRUB Validator ==="
 echo
 
 if [ ! -d "$ANIMATION_DIR" ]; then
@@ -15,7 +16,7 @@ fi
 
 files=("$ANIMATION_DIR"/*.png)
 
-if [ ! -e "${files[0]}" ]; then
+if [ "${#files[@]}" -eq 0 ]; then
     echo "ERROR: No PNG frames found."
     exit 1
 fi

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ANIMATION_DIR="$PROJECT_DIR/theme/animation"
@@ -20,7 +20,7 @@ fi
 TEMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TEMP_DIR"' EXIT
 
-echo "=== GRUB Animation Importer ==="
+echo "=== Animated GRUB Importer ==="
 echo
 echo "ZIP: $ZIP_FILE"
 echo
@@ -37,6 +37,56 @@ fi
 echo "Found ${#PNG_FILES[@]} PNG frame(s)."
 echo
 
+# Validate every file BEFORE touching theme/animation/, so any error
+# message can point back to the original filename from the ZIP instead
+# of a confusing renamed "N.png", and so a failed import never deletes
+# or replaces a previously-working animation.
+for file in "${PNG_FILES[@]}"; do
+    if ! file "$file" | grep -q "PNG image data"; then
+        echo "ERROR: Not a valid PNG file in the ZIP:"
+        echo "       $(basename "$file")"
+        echo
+        echo "Your existing animation has NOT been changed."
+        exit 1
+    fi
+done
+
+echo "All source files are valid PNGs."
+echo
+
+# Check that every frame has the same dimensions as the first frame,
+# BEFORE touching theme/animation/. This uses the same "file"-based
+# dimension check as validate.sh, but against the original filenames
+# in the ZIP so a mismatch is easy to trace back to its source.
+first_info="$(file "${PNG_FILES[0]}")"
+first_dimensions="$(echo "$first_info" | sed -n 's/.*PNG image data, \([0-9]* x [0-9]*\).*/\1/p')"
+
+if [ -z "$first_dimensions" ]; then
+    echo "ERROR: Could not determine dimensions of:"
+    echo "       $(basename "${PNG_FILES[0]}")"
+    echo
+    echo "Your existing animation has NOT been changed."
+    exit 1
+fi
+
+for file in "${PNG_FILES[@]}"; do
+    dimensions="$(file "$file" | sed -n 's/.*PNG image data, \([0-9]* x [0-9]*\).*/\1/p')"
+
+    if [ "$dimensions" != "$first_dimensions" ]; then
+        echo "ERROR: Frame dimensions do not match:"
+        echo "       $(basename "$file"): $dimensions"
+        echo "       Expected: $first_dimensions"
+        echo
+        echo "Your existing animation has NOT been changed."
+        exit 1
+    fi
+done
+
+echo "All source frames match dimensions: $first_dimensions"
+echo
+
+# Only now that every check has passed do we touch theme/animation/.
+
 # Clear existing animation frames.
 rm -f "$ANIMATION_DIR"/*.png
 
@@ -51,7 +101,10 @@ done
 echo "Imported ${#PNG_FILES[@]} frame(s)."
 echo
 
-# Validate the imported animation.
+# Final confirmation pass (numbering, format, dimensions) on the
+# frames actually written to theme/animation/. Since every check
+# above already passed against the same source files, this is a
+# safety net rather than an expected point of failure.
 "$PROJECT_DIR/validate.sh"
 
 echo
